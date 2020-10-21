@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeBoost.UI", "CafeBoost.UI\CafeBoost.UI.csproj", "{4CFD103B-AF7C-4BE6-A72B-65A14B3D0906}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CafeBoost.Data", "CafeBoost.Data\CafeBoost.Data.csproj", "{A5067E0C-79EB-48E5-B541-F3F16A8DD480}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CFD103B-AF7C-4BE6-A72B-65A14B3D0906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CFD103B-AF7C-4BE6-A72B-65A14B3D0906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CFD103B-AF7C-4BE6-A72B-65A14B3D0906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CFD103B-AF7C-4BE6-A72B-65A14B3D0906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5067E0C-79EB-48E5-B541-F3F16A8DD480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5067E0C-79EB-48E5-B541-F3F16A8DD480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5067E0C-79EB-48E5-B541-F3F16A8DD480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5067E0C-79EB-48E5-B541-F3F16A8DD480}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96540823-3ABC-43A9-978A-5C7A10C10D05}
+	EndGlobalSection
+EndGlobal
