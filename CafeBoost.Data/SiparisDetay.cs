@@ -10,11 +10,9 @@ namespace CafeBoost.Data
         public decimal BirimFiyat { get; set; }
         public int Adet { get; set; }
 
-        public string TutarTL { get { return Tutar() + "TL"; }}
+        public string TutarTL { get { return $"{Tutar():0.00}TL"; } }
 
-        private decimal Tutar()
-        {
-            return Adet * BirimFiyat;
-        }
+        public decimal Tutar() => Adet * BirimFiyat;
+
     }
 }

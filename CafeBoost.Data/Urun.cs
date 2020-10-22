@@ -8,10 +8,10 @@ namespace CafeBoost.Data
     {
         public string UrunAd { get; set; }
         public decimal BirimFiyat { get; set; }
-
+       
         public override string ToString()
         {
-            return $"{UrunAd} {BirimFiyat:0.00} TL";
+            return $"{UrunAd} ({BirimFiyat:0.00}) ₺";
         }
     }
 }

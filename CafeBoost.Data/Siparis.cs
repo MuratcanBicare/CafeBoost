@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CafeBoost.Data
@@ -12,11 +13,26 @@ namespace CafeBoost.Data
         public DateTime? KapanisZamani { get; set; }
         public SiparisDurum Durum { get; set; }
 
-        public string ToplamTutarTL { get { return ToplamTutar().ToString(); } }
+        public string ToplamTutarTL => $"{ToplamTutar():0.00}₺";
 
-        private decimal ToplamTutar()
+        public Siparis()
         {
-            return 0;
+            SiparisDetaylar = new List<SiparisDetay>();
+            AcilisiZamani = DateTime.Now;
+        }
+
+        public decimal ToplamTutar()
+        {
+
+            return SiparisDetaylar.Sum(x => x.Tutar());
+            
+            //decimal sonuc = 0m;
+            //foreach (var s in SiparisDetaylar)
+            //{
+            //    sonuc += s.Adet * s.BirimFiyat;
+            //}
+
+            //return sonuc;
         }
     }
 }
