@@ -82,7 +82,13 @@ namespace CafeBoost.UI
                 db.AktifSiparisler.Add(siparis);
                 lvwMasalar.SelectedItems[0].ImageKey = "dolu";
             }
-            new SiparisForm(db,siparis).ShowDialog();
+            SiparisForm frmSiparis = new SiparisForm(db, siparis);
+            DialogResult dr = frmSiparis.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                lvwMasalar.SelectedItems[0].ImageKey = "bos";
+            }
+            //MessageBox.Show(dr.ToString());
         }
 
         private Siparis AktifSiparisBul(int masaNo)

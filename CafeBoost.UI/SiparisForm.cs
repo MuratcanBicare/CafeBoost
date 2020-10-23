@@ -21,6 +21,7 @@ namespace CafeBoost.UI
             db = kafeVeri;
             this.siparis = siparis;
             InitializeComponent();
+            dgvSiparisDetaylar.AutoGenerateColumns = false;
             UrunleriListeler();
             MasaNoGuncelle();
             OdemeTutariGuncelle();
@@ -30,6 +31,12 @@ namespace CafeBoost.UI
             blSiparisDetaylar.ListChanged += BlSiparisDetaylar_ListChanged;
             dgvSiparisDetaylar.DataSource = blSiparisDetaylar;
 
+            #region Sütunları Elle İsimlendirme
+            //dgvSiparisDetaylar.Columns[0].HeaderText = "Ürün Adı";
+            //dgvSiparisDetaylar.Columns[1].HeaderText = "Birim Fiyat";
+            //dgvSiparisDetaylar.Columns[2].HeaderText = "Adet";
+            //dgvSiparisDetaylar.Columns[3].HeaderText = "Tutar TL"; 
+            #endregion
         }
 
         private void BlSiparisDetaylar_ListChanged(object sender, ListChangedEventArgs e)
@@ -57,6 +64,7 @@ namespace CafeBoost.UI
         {
             Urun secilen = (Urun)cboUrun.SelectedItem;
             int adet = (int)nudAdet.Value;
+
             SiparisDetay detay = new SiparisDetay()
             {
                 UrunAd = secilen.UrunAd,
@@ -65,6 +73,27 @@ namespace CafeBoost.UI
             };
             blSiparisDetaylar.Add(detay);
             //OdemeTutariGuncelle();
+
+            #region Adı aynı olan ürünleri adede ekleme
+            //SiparisDetay det = blSiparisDetaylar.FirstOrDefault(x => x.UrunAd == secilen.UrunAd);
+
+            //if (det != null)
+            //{
+            //    det.Adet += adet;
+            //    blSiparisDetaylar.ResetBindings();
+            //}
+            //else
+            //{
+            //    det = new SiparisDetay()
+            //    {
+            //        UrunAd = secilen.UrunAd,
+            //        BirimFiyat = secilen.BirimFiyat,
+            //        Adet = adet
+            //    };
+            //    blSiparisDetaylar.Add(det);
+            //} 
+            #endregion
+
 
         }
 
@@ -76,6 +105,42 @@ namespace CafeBoost.UI
             {
                 e.Cancel = true;
             }
+        }
+
+        private void btnAnasayfa_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btnSiparisIptal_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Sipariş iptal edilerekk kapatılacaktır. Emin Misiniz?", "Ödeme Onayı", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dr == DialogResult.Yes)
+            {
+                SiparisKapat(SiparisDurum.Iptal);
+            }
+        }
+
+        private void btnOdemeAl_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Ödeme alındıysa sipariş kapatılacaktır. Emin Misiniz?", "Ödeme Onayı", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dr == DialogResult.Yes)
+            {
+                SiparisKapat(SiparisDurum.Odendi, siparis.ToplamTutar());
+
+            }
+        }
+
+        private void SiparisKapat(SiparisDurum siparisDurum, decimal odenenTutar = 0)
+        {
+            siparis.OdenenTutar = odenenTutar;
+            siparis.KapanisZamani = DateTime.Now;
+            siparis.Durum = siparisDurum;
+            db.AktifSiparisler.Remove(siparis);
+            db.GecmisSiparisler.Add(siparis);
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         //private void dgvSiparisDetaylar_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
