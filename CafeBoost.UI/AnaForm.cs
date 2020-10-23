@@ -28,19 +28,19 @@ namespace CafeBoost.UI
 
 
 
-        private void OrnekUrunleriYukle()
-        {
-            db.Urunler.Add(new Urun
-            {
-                UrunAd = "Kola",
-                BirimFiyat = 6m
-            });
-            db.Urunler.Add(new Urun
-            {
-                UrunAd = "Ayran",
-                BirimFiyat = 4m
-            });
-        }
+        //private void OrnekUrunleriYukle()
+        //{
+        //    db.Urunler.Add(new Urun
+        //    {
+        //        UrunAd = "Kola",
+        //        BirimFiyat = 6m
+        //    });
+        //    db.Urunler.Add(new Urun
+        //    {
+        //        UrunAd = "Ayran",
+        //        BirimFiyat = 4m
+        //    });
+        //}
 
         private void MasalariOlustur()
         {
@@ -87,13 +87,19 @@ namespace CafeBoost.UI
                 db.AktifSiparisler.Add(siparis);
                 lvwMasalar.SelectedItems[0].ImageKey = "dolu";
             }
-            SiparisForm frmSiparis = new SiparisForm(db, siparis, this);
+            SiparisForm frmSiparis = new SiparisForm(db, siparis);
+            frmSiparis.MasaTasindi += FrmSiparis_MasaTasindi;
             DialogResult dr = frmSiparis.ShowDialog();
             if (dr == DialogResult.OK)
             {
                 lvwMasalar.SelectedItems[0].ImageKey = "bos";
             }
             //MessageBox.Show(dr.ToString());
+        }
+
+        private void FrmSiparis_MasaTasindi(object sender, MasaTasimaEventArgs e)
+        {
+            MasaTasi(e.EskiMasaNo, e.YeniMasaNo);
         }
 
         private Siparis AktifSiparisBul(int masaNo)
@@ -113,7 +119,7 @@ namespace CafeBoost.UI
             #endregion
         }
 
-        public void MasaTasi(int kaynak, int hedef)
+        private void MasaTasi(int kaynak, int hedef)
         {
             foreach (ListViewItem lvi in lvwMasalar.Items)
             {
