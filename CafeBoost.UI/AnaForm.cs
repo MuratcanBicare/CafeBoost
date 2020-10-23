@@ -14,7 +14,7 @@ namespace CafeBoost.UI
 {
     public partial class AnaForm : Form
     {
-        int MasaAdet = 20;
+
         KafeVeri db = new KafeVeri();
         public AnaForm()
         {
@@ -49,7 +49,7 @@ namespace CafeBoost.UI
 
             #region Masaların Oluşturulması
             ListViewItem lvi;
-            for (int i = 1; i <= MasaAdet; i++)
+            for (int i = 1; i <= db.MasaAdet; i++)
             {
                 lvi = new ListViewItem("Masa " + i);
                 lvi.ImageKey = "bos";
@@ -75,14 +75,14 @@ namespace CafeBoost.UI
             //MessageBox.Show(masaNo.ToString());
             Siparis siparis = AktifSiparisBul(masaNo);
 
-            if(siparis == null)
+            if (siparis == null)
             {
                 siparis = new Siparis();
                 siparis.MasaNo = masaNo;
                 db.AktifSiparisler.Add(siparis);
                 lvwMasalar.SelectedItems[0].ImageKey = "dolu";
             }
-            SiparisForm frmSiparis = new SiparisForm(db, siparis);
+            SiparisForm frmSiparis = new SiparisForm(db, siparis, this);
             DialogResult dr = frmSiparis.ShowDialog();
             if (dr == DialogResult.OK)
             {
@@ -94,7 +94,7 @@ namespace CafeBoost.UI
         private Siparis AktifSiparisBul(int masaNo)
         {
             #region linq yöntemi
-            return db.AktifSiparisler.FirstOrDefault(x => x.MasaNo == masaNo); 
+            return db.AktifSiparisler.FirstOrDefault(x => x.MasaNo == masaNo);
             #endregion
             #region ForeachYöntemi
             foreach (Siparis item in db.AktifSiparisler)
@@ -106,6 +106,21 @@ namespace CafeBoost.UI
             }
             return null;
             #endregion
+        }
+
+        public void MasaTasi(int kaynak, int hedef)
+        {
+            foreach (ListViewItem lvi in lvwMasalar.Items)
+            {
+                if ((int)lvi.Tag == kaynak)
+                {
+                    lvi.ImageKey = "bos";
+                }
+                if ((int)lvi.Tag == hedef)
+                {
+                    lvi.ImageKey = "dolu";
+                }
+            }
         }
     }
 }
