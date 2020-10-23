@@ -61,7 +61,7 @@ namespace CafeBoost.UI
 
         private void tsmiUrunler_Click(object sender, EventArgs e)
         {
-            new Urunler().ShowDialog();
+            new Urunler(db).ShowDialog();
         }
 
         private void tsmiGecmisSiparisler_Click(object sender, EventArgs e)
