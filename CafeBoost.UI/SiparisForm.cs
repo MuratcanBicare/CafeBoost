@@ -14,12 +14,12 @@ namespace CafeBoost.UI
     public partial class SiparisForm : Form
     {
         public event EventHandler<MasaTasimaEventArgs> MasaTasindi;
-        private readonly KafeVeri db;
+        private readonly CafeBoostContext db;
         private readonly Siparis siparis;
         private readonly BindingList<SiparisDetay> blSiparisDetaylar;
-        public SiparisForm(KafeVeri kafeVeri, Siparis siparis)
+        public SiparisForm(CafeBoostContext cafeBoostContext, Siparis siparis)
         {
-            db = kafeVeri;
+            db = cafeBoostContext;
             this.siparis = siparis;
             InitializeComponent();
             dgvSiparisDetaylar.AutoGenerateColumns = false;
@@ -29,7 +29,7 @@ namespace CafeBoost.UI
             OdemeTutariGuncelle();
             //Text = siparis.MasaNo.ToString();
 
-            blSiparisDetaylar = new BindingList<SiparisDetay>(siparis.SiparisDetaylar);
+            blSiparisDetaylar = new BindingList<SiparisDetay>(siparis.SiparisDetaylar.ToList());
             blSiparisDetaylar.ListChanged += BlSiparisDetaylar_ListChanged;
             dgvSiparisDetaylar.DataSource = blSiparisDetaylar;
 
@@ -47,9 +47,9 @@ namespace CafeBoost.UI
 
             for (int i = 1; i <= db.MasaAdet; i++)
             {
-                if (!db.AktifSiparisler.Any(x => x.MasaNo == i))
+                if (!db.Siparisler.Any(x => x.MasaNo == i && x.Durum == SiparisDurum.Aktif))
                 {
-                    cboMasalar.Items.Add(i);
+                    cboMasalar.Items.Add(i); 
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace CafeBoost.UI
 
         private void UrunleriListeler()
         {
-            cboUrun.DataSource = db.Urunler;
+            cboUrun.DataSource = db.Urunler.ToList();
         }
 
         private void MasaNoGuncelle()
@@ -82,11 +82,14 @@ namespace CafeBoost.UI
 
             SiparisDetay detay = new SiparisDetay()
             {
+                UrunId = secilen.Id,
                 UrunAd = secilen.UrunAd,
                 BirimFiyat = secilen.BirimFiyat,
                 Adet = adet
             };
-            blSiparisDetaylar.Add(detay);
+            siparis.SiparisDetaylar.Add(detay);
+            db.SaveChanges();
+            SiparisDetaylariGuncelle();
             //OdemeTutariGuncelle();
 
             #region Adı aynı olan ürünleri adede ekleme
@@ -112,6 +115,12 @@ namespace CafeBoost.UI
 
         }
 
+        private void SiparisDetaylariGuncelle()
+        {
+            blSiparisDetaylar.Clear();
+            siparis.SiparisDetaylar.ToList().ForEach(x => blSiparisDetaylar.Add(x));
+        }
+
         private void dgvSiparisDetaylar_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             DialogResult dr = MessageBox.Show("Seçili detyaları silmek istediğinize emin misiniz?", "Silme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
@@ -120,6 +129,10 @@ namespace CafeBoost.UI
             {
                 e.Cancel = true;
             }
+
+            SiparisDetay sd = (SiparisDetay)e.Row.DataBoundItem;
+            db.SiparisDetaylar.Remove(sd);
+            db.SaveChanges();
         }
 
         private void btnAnasayfa_Click(object sender, EventArgs e)
@@ -152,8 +165,7 @@ namespace CafeBoost.UI
             siparis.OdenenTutar = odenenTutar;
             siparis.KapanisZamani = DateTime.Now;
             siparis.Durum = siparisDurum;
-            db.AktifSiparisler.Remove(siparis);
-            db.GecmisSiparisler.Add(siparis);
+            db.SaveChanges();
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -164,6 +176,7 @@ namespace CafeBoost.UI
             int kaynak = siparis.MasaNo;
             int hedef = (int)cboMasalar.SelectedItem;
             siparis.MasaNo = hedef;
+            db.SaveChanges();
             MasaNoGuncelle();
             MasalariListele();
 

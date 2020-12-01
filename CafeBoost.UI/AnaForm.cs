@@ -17,30 +17,14 @@ namespace CafeBoost.UI
     public partial class AnaForm : Form
     {
 
-        KafeVeri db;
+        CafeBoostContext db = new CafeBoostContext();
         public AnaForm()
         {
-            VeriOku();
+            
             InitializeComponent();
-            //OrnekUrunleriYukle();
             MasalariOlustur();
         }
 
-
-
-        //private void OrnekUrunleriYukle()
-        //{
-        //    db.Urunler.Add(new Urun
-        //    {
-        //        UrunAd = "Kola",
-        //        BirimFiyat = 6m
-        //    });
-        //    db.Urunler.Add(new Urun
-        //    {
-        //        UrunAd = "Ayran",
-        //        BirimFiyat = 4m
-        //    });
-        //}
 
         private void MasalariOlustur()
         {
@@ -57,7 +41,7 @@ namespace CafeBoost.UI
             for (int i = 1; i <= db.MasaAdet; i++)
             {
                 lvi = new ListViewItem("Masa " + i);
-                lvi.ImageKey = db.AktifSiparisler.Any(x => x.MasaNo == i) ? "dolu" : "bos";
+                lvi.ImageKey = db.Siparisler.Any(x => x.MasaNo == i && x.Durum == SiparisDurum.Aktif) ? "dolu" : "bos";
                 lvi.Tag = i; // önemli masa numaralarını alıyoruz
                 lvwMasalar.Items.Add(lvi);
             }
@@ -84,7 +68,7 @@ namespace CafeBoost.UI
             {
                 siparis = new Siparis();
                 siparis.MasaNo = masaNo;
-                db.AktifSiparisler.Add(siparis);
+                db.Siparisler.Add(siparis);
                 lvwMasalar.SelectedItems[0].ImageKey = "dolu";
             }
             SiparisForm frmSiparis = new SiparisForm(db, siparis);
@@ -105,18 +89,9 @@ namespace CafeBoost.UI
         private Siparis AktifSiparisBul(int masaNo)
         {
             #region linq yöntemi
-            return db.AktifSiparisler.FirstOrDefault(x => x.MasaNo == masaNo);
+            return db.Siparisler.FirstOrDefault(x => x.MasaNo == masaNo && x.Durum == SiparisDurum.Aktif);
             #endregion
-            #region ForeachYöntemi
-            foreach (Siparis item in db.AktifSiparisler)
-            {
-                if (item.MasaNo == masaNo)
-                {
-                    return item;
-                }
-            }
-            return null;
-            #endregion
+            
         }
 
         private void MasaTasi(int kaynak, int hedef)
@@ -126,35 +101,13 @@ namespace CafeBoost.UI
                 if ((int)lvi.Tag == kaynak)
                 {
                     lvi.ImageKey = "bos";
+                    lvi.Selected = false;
                 }
                 if ((int)lvi.Tag == hedef)
                 {
                     lvi.ImageKey = "dolu";
+                    lvi.Selected = true;
                 }
-            }
-        }
-
-        private void AnaForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            VeriKaydet();
-        }
-
-        private void VeriKaydet()
-        {
-            string json = JsonConvert.SerializeObject(db, Formatting.Indented);
-            File.WriteAllText("veri.json", json);
-        }
-
-        private void VeriOku()
-        {
-            try
-            {
-                string json = File.ReadAllText("veri.json");
-                db = JsonConvert.DeserializeObject<KafeVeri>(json);
-            }
-            catch (Exception)
-            {
-                db = new KafeVeri();
             }
         }
     }

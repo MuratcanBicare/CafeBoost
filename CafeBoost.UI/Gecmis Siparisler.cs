@@ -13,13 +13,15 @@ namespace CafeBoost.UI
 {
     public partial class Gecmis_Siparisler : Form
     {
-        private readonly KafeVeri db;
+        private readonly CafeBoostContext db;
 
-        public Gecmis_Siparisler(KafeVeri kafeVeri)
+        public Gecmis_Siparisler(CafeBoostContext cafeBoostContext)
         {
-            db = kafeVeri;
+            db = cafeBoostContext;
             InitializeComponent();
-            dgvSiparis.DataSource = db.GecmisSiparisler;
+            dgvSiparisDetaylar.AutoGenerateColumns = false;
+            dgvSiparis.AutoGenerateColumns = false;
+            dgvSiparis.DataSource = db.Siparisler.Where(x=> x.Durum != SiparisDurum.Aktif).ToList();
 
         }
 
@@ -30,7 +32,7 @@ namespace CafeBoost.UI
             {
                 //seçili satırlarının ilkinin üzerindeki siparis nesnesi
                 Siparis seciliSiparis = (Siparis)dgvSiparis.SelectedRows[0].DataBoundItem;
-                dgvSiparisDetaylar.DataSource = seciliSiparis.SiparisDetaylar;
+                dgvSiparisDetaylar.DataSource = seciliSiparis.SiparisDetaylar.ToList();
 
             }
         }
